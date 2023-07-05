@@ -1,5 +1,56 @@
-template-repository (1.0-1) unstable; urgency=medium
+nss-pem (1.0.8+1-1deepin1) unstable; urgency=medium
 
-  * Initial release
+  * This is a packaged version which is suitable for deepin23 sys.
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Cruise.zrz <Cruise.zrz@gmail.com>  Mon, 10 Jul 2023 11:43:20 +0800
+
+nss-pem (1.0.8+1-1) unstable; urgency=medium
+
+  * nss: Sync with src:nss 2:3.85-1.
+  * d/patches: Refreshed.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Wed, 11 Jan 2023 13:00:56 +0200
+
+nss-pem (1.0.8-1) unstable; urgency=medium
+
+  * New upstream release.
+  * nss: Refreshed to 2:3.70-1. (Closes: #984259)
+  * rules: Support parallel build.
+  * migrate-to-nss-names.diff: Dropped, upstream.
+  * fix-ftbfs-s390x.patch: Refreshed.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Mon, 11 Oct 2021 11:08:47 +0300
+
+nss-pem (1.0.6-2) unstable; urgency=medium
+
+  * fix-ftbfs-s390x.patch: Import a patch from Ubuntu nss to fix build
+    on s390x.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Fri, 25 Sep 2020 07:02:37 +0300
+
+nss-pem (1.0.6-1) unstable; urgency=medium
+
+  * New upstream release.
+  * control: Bump policy to 4.5.0.
+  * nss: Refreshed to 3.55-1.
+  * migrate-to-nss-names.diff: Migrate from NETSCAPE to NSS attributes.
+    (Closes: #963291)
+  * Fix FTCBFS: Let dh_auto_configure pass cross flags to cmake. Thanks,
+    Helmut Grohne! (Closes: #932639)
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Thu, 06 Aug 2020 18:35:59 +0300
+
+nss-pem (1.0.5-1) unstable; urgency=medium
+
+  * New upstream release.
+  * control: Bump policy to 4.4.0.
+  * get-nss.sh: Use -f for git add.
+  * nss: Refreshed to 3.44.0-1.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Mon, 08 Jul 2019 16:01:00 +0300
+
+nss-pem (1.0.4-1) unstable; urgency=medium
+
+  * Initial release (Closes: #888820)
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Thu, 06 Dec 2018 19:32:22 +0200

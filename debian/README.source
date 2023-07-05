@@ -1,0 +1,15 @@
+nss-pem
+=======
+
+This source embeds src:nss because it needs some headers and static libs
+that the nss maintainer has refused to package, see bugs:
+
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=855879
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=732201
+
+if the situation changes and the files are packaged by src:nss then the
+embedded copy can be dropped.
+
+The files that libnsspem.so needs for its build are:
+ private headers: alghmac.h blapi.h
+ static libs: libfreebl.a nssb.a nssckfw.a

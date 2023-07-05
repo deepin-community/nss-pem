@@ -1,0 +1,105 @@
+Description: Fix FTBFS on s390x
+ error: ‘element’ may be used uninitialized in this function
+ error: ‘cmpResult’ may be used uninitialized in this function
+ error: ‘value’ may be used uninitialized in this function
+ error: sprintf may write a terminating nul past the end of the destination
+Author: Eduardo Barretto <eduardo.barretto@canonical.com>
+
+--- a/nss/nss/cmd/certutil/certext.c
++++ b/nss/nss/cmd/certutil/certext.c
+@@ -327,7 +327,7 @@ AddKeyUsage(void *extHandle, const char
+     SECItem bitStringValue;
+     unsigned char keyUsage = 0x0;
+     char buffer[5];
+-    int value;
++    int value = 0;
+     char *nextPos = (char *)userSuppliedValue;
+     PRBool isCriticalExt = PR_FALSE;
+ 
+@@ -510,7 +510,7 @@ static SECStatus
+ AddExtKeyUsage(void *extHandle, const char *userSuppliedValue)
+ {
+     char buffer[5];
+-    int value;
++    int value = 0;
+     CERTOidSequence *os;
+     SECStatus rv;
+     SECItem *item;
+@@ -664,7 +664,7 @@ AddNscpCertType(void *extHandle, const c
+     SECItem bitStringValue;
+     unsigned char keyUsage = 0x0;
+     char buffer[5];
+-    int value;
++    int value = 0;
+     char *nextPos = (char *)userSuppliedValue;
+     PRBool isCriticalExt = PR_FALSE;
+ 
+--- a/nss/nss/cmd/modutil/install.c
++++ b/nss/nss/cmd/modutil/install.c
+@@ -798,6 +798,7 @@ rm_dash_r(char *path)
+     PRDirEntry *entry;
+     PRFileInfo fileinfo;
+     char filename[240];
++    int count;
+ 
+     if (PR_GetFileInfo(path, &fileinfo) != PR_SUCCESS) {
+         /*fprintf(stderr, "Error: Unable to access %s\n", filename);*/
+@@ -812,7 +813,11 @@ rm_dash_r(char *path)
+ 
+         /* Recursively delete all entries in the directory */
+         while ((entry = PR_ReadDir(dir, PR_SKIP_BOTH)) != NULL) {
+-            sprintf(filename, "%s/%s", path, entry->name);
++            count = snprintf(filename, sizeof(filename), "%s/%s", path, entry->name);
++            if (count >= sizeof(filename)) {
++                PR_fprintf(PR_STDERR, "Error: Unable to find filename %s\n", filename);
++                return -1;
++            }
+             if (rm_dash_r(filename)) {
+                 PR_CloseDir(dir);
+                 return -1;
+--- a/nss/nss/cmd/signtool/util.c
++++ b/nss/nss/cmd/signtool/util.c
+@@ -121,6 +121,7 @@ rm_dash_r(char *path)
+     PRDirEntry *entry;
+     PRFileInfo fileinfo;
+     char filename[FNSIZE];
++    int count;
+ 
+     if (PR_GetFileInfo(path, &fileinfo) != PR_SUCCESS) {
+         /*fprintf(stderr, "Error: Unable to access %s\n", filename);*/
+@@ -137,7 +138,12 @@ rm_dash_r(char *path)
+ 
+         /* Recursively delete all entries in the directory */
+         while ((entry = PR_ReadDir(dir, PR_SKIP_BOTH)) != NULL) {
+-            sprintf(filename, "%s/%s", path, entry->name);
++            count = snprintf(filename, sizeof(filename), "%s/%s", path, entry->name);
++            if (count >= sizeof(filename)) {
++                PR_fprintf(errorFD, "Error: Unable to find filename %s.\n", filename);
++                errorCount++;
++                exit(ERRX);
++            }
+             if (rm_dash_r(filename)) {
+                 PR_CloseDir(dir);
+                 return -1;
+--- a/nss/nss/lib/libpkix/pkix/util/pkix_list.c
++++ b/nss/nss/lib/libpkix/pkix/util/pkix_list.c
+@@ -1535,7 +1535,7 @@ PKIX_List_SetItem(
+         PKIX_PL_Object *item,
+         void *plContext)
+ {
+-        PKIX_List *element;
++        PKIX_List *element = NULL;
+ 
+         PKIX_ENTER(LIST, "PKIX_List_SetItem");
+         PKIX_NULLCHECK_ONE(list);
+--- a/nss/nss/lib/libpkix/pkix_pl_nss/system/pkix_pl_oid.c
++++ b/nss/nss/lib/libpkix/pkix_pl_nss/system/pkix_pl_oid.c
+@@ -107,7 +107,7 @@ pkix_pl_OID_Equals(
+         PKIX_Boolean *pResult,
+         void *plContext)
+ {
+-        PKIX_Int32 cmpResult;
++        PKIX_Int32 cmpResult = 0;
+ 
+         PKIX_ENTER(OID, "pkix_pl_OID_Equals");
+         PKIX_NULLCHECK_THREE(first, second, pResult);

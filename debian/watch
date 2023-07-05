@@ -1,0 +1,3 @@
+version=4
+
+https://github.com/kdudka/nss-pem/releases (?:.*/)?nss-pem-?(\d[\d\.]*)\.tar\.xz

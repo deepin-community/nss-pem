@@ -1,0 +1,3 @@
+# this is a module for libcurl-nss, not a library that others link to
+#package-must-activate-ldconfig-trigger usr/lib/*/nss/libnsspem.so
+#shlib-without-versioned-soname usr/lib/*/nss/libnsspem.so libnsspem.so
