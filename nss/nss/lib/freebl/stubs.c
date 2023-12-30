@@ -86,6 +86,10 @@
     if (ptr_##fn) {                         \
         return ptr_##fn(a1, a2, a3, a4);    \
     }
+#define STUB_SAFE_CALL5(fn, a1, a2, a3, a4, a5) \
+    if (ptr_##fn) {                             \
+        return ptr_##fn(a1, a2, a3, a4, a5);    \
+    }
 #define STUB_SAFE_CALL6(fn, a1, a2, a3, a4, a5, a6) \
     if (ptr_##fn) {                                 \
         return ptr_##fn(a1, a2, a3, a4, a5, a6);    \
@@ -170,12 +174,14 @@ STUB_DECLARE(char *, PR_GetEnvSecure, (const char *));
 
 STUB_DECLARE(SECItem *, SECITEM_AllocItem_Util, (PLArenaPool * arena, SECItem *item, unsigned int len));
 STUB_DECLARE(SECComparison, SECITEM_CompareItem_Util, (const SECItem *a, const SECItem *b));
+STUB_DECLARE(PRBool, SECITEM_ItemsAreEqual_Util, (const SECItem *a, const SECItem *b));
 STUB_DECLARE(SECStatus, SECITEM_CopyItem_Util, (PLArenaPool * arena, SECItem *to, const SECItem *from));
 STUB_DECLARE(void, SECITEM_FreeItem_Util, (SECItem * zap, PRBool freeit));
 STUB_DECLARE(void, SECITEM_ZfreeItem_Util, (SECItem * zap, PRBool freeit));
 STUB_DECLARE(SECOidTag, SECOID_FindOIDTag_Util, (const SECItem *oid));
 STUB_DECLARE(int, NSS_SecureMemcmp, (const void *a, const void *b, size_t n));
 STUB_DECLARE(unsigned int, NSS_SecureMemcmpZero, (const void *mem, size_t n));
+STUB_DECLARE(void, NSS_SecureSelect, (void *dest, const void *src0, const void *src1, size_t n, unsigned char b));
 
 #define PORT_ZNew_stub(type) (type *)PORT_ZAlloc_stub(sizeof(type))
 #define PORT_New_stub(type) (type *)PORT_Alloc_stub(sizeof(type))
@@ -573,8 +579,11 @@ extern char *
 PR_GetEnvSecure_stub(const char *var)
 {
     STUB_SAFE_CALL1(PR_GetEnvSecure, var);
-    abort();
-    return NULL;
+#ifdef __USE_GNU
+    return secure_getenv(var);
+#else
+    return getenv(var);
+#endif
 }
 
 extern void
@@ -622,6 +631,30 @@ SECITEM_CompareItem_stub(const SECItem *a, const SECItem *b)
     return SECEqual;
 }
 
+extern PRBool
+SECITEM_ItemsAreEqual_stub(const SECItem *a, const SECItem *b)
+{
+    STUB_SAFE_CALL2(SECITEM_ItemsAreEqual_Util, a, b);
+    /* two nulls are equal */
+    if (!a && !b) {
+        return PR_TRUE;
+    }
+    /* only one NULL is not equal */
+    if (!a || !b) {
+        return PR_FALSE;
+    }
+    /* we know both secitems have been set, now make sure the lengths
+     * are equal */
+    if (a->len != b->len) {
+        return PR_FALSE;
+    }
+    /* lengths are equal, safe to verify the data */
+    if (PORT_Memcmp(a->data, b->data, b->len) != 0) {
+        return PR_FALSE;
+    }
+    return PR_TRUE;
+}
+
 extern SECStatus
 SECITEM_CopyItem_stub(PLArenaPool *arena, SECItem *to, const SECItem *from)
 {
@@ -646,7 +679,16 @@ extern void
 SECITEM_ZfreeItem_stub(SECItem *zap, PRBool freeit)
 {
     STUB_SAFE_CALL2(SECITEM_ZfreeItem_Util, zap, freeit);
-    abort();
+    if (zap) {
+        if (zap->data) {
+            PORT_Memset(zap->data, 0, zap->len);
+            PORT_Free_stub(zap->data);
+        }
+        PORT_Memset(zap, 0, sizeof(SECItem));
+        if (freeit) {
+            PORT_Free_stub(zap);
+        }
+    }
 }
 
 extern int
@@ -660,6 +702,13 @@ extern unsigned int
 NSS_SecureMemcmpZero_stub(const void *mem, size_t n)
 {
     STUB_SAFE_CALL2(NSS_SecureMemcmpZero, mem, n);
+    abort();
+}
+
+extern void
+NSS_SecureSelect_stub(void *dest, const void *src0, const void *src1, size_t n, unsigned char b)
+{
+    STUB_SAFE_CALL5(NSS_SecureSelect, dest, src0, src1, n, b);
     abort();
 }
 
@@ -716,6 +765,7 @@ freebl_InitNSSUtil(void *lib)
     STUB_FETCH_FUNCTION(SECOID_FindOIDTag_Util);
     STUB_FETCH_FUNCTION(NSS_SecureMemcmp);
     STUB_FETCH_FUNCTION(NSS_SecureMemcmpZero);
+    STUB_FETCH_FUNCTION(NSS_SecureSelect);
     return SECSuccess;
 }
 
