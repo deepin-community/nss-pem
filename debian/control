@@ -1,8 +1,9 @@
 Source: nss-pem
 Section: libs
 Priority: optional
-Maintainer: Cruise.zrz <Cruise.zrz@gmail.com>
-Build-Depends: debhelper (>= 10),
+Maintainer: Debian FreeIPA Team <pkg-freeipa-devel@lists.alioth.debian.org>
+Uploaders: Timo Aaltonen <tjaalton@debian.org>
+Build-Depends: debhelper-compat (= 13),
  cmake,
  libnss3-dev,
  pkg-config,
@@ -12,10 +13,10 @@ Build-Depends: debhelper (>= 10),
  zlib1g-dev,
  libsqlite3-dev (>= 3.3.9),
  libnss3-tools:native (>= 2:3.19-1-1~) <cross>
-Standards-Version: 4.5.0
+Standards-Version: 4.6.2
 Homepage: https://github.com/kdudka/nss-pem
-#Vcs-Browser: https://salsa.debian.org/debian/nss-pem
-#Vcs-Git: https://salsa.debian.org/debian/nss-pem.git
+Vcs-Git: https://salsa.debian.org/freeipa-team/nss-pem.git
+Vcs-Browser: https://salsa.debian.org/freeipa-team/nss-pem
 
 Package: nss-plugin-pem
 Architecture: any

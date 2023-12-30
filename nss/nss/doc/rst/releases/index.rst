@@ -8,12 +8,23 @@ Releases
    :glob:
    :hidden:
 
+   nss_3_91_0.rst
+   nss_3_90_0.rst
+   nss_3_89_1.rst
+   nss_3_89.rst
+   nss_3_88_1.rst
+   nss_3_88.rst
+   nss_3_87_1.rst
+   nss_3_87.rst
+   nss_3_86.rst
    nss_3_85.rst
    nss_3_84.rst
    nss_3_83.rst
    nss_3_82.rst
    nss_3_81.rst
    nss_3_80.rst
+   nss_3_79_4.rst
+   nss_3_79_3.rst
    nss_3_79_2.rst
    nss_3_79_1.rst
    nss_3_79.rst
@@ -44,30 +55,27 @@ Releases
 
 .. note::
 
-   **NSS 3.85** is the latest version of NSS.
-   Complete release notes are available here: :ref:`mozilla_projects_nss_nss_3_85_release_notes`
+   **NSS 3.91.0** is the latest version of NSS.
+   Complete release notes are available here: :ref:`mozilla_projects_nss_nss_3_91_0_release_notes`
 
-   **NSS 3.79.2** is the latest ESR version of NSS.
-   Complete release notes are available here: :ref:`mozilla_projects_nss_nss_3_79_2_release_notes`
-
+   **NSS 3.90.0 (ESR)** is the latest version of NSS.
+   Complete release notes are available here: :ref:`mozilla_projects_nss_nss_3_90_0_release_notes`
 
 .. container::
 
-   Changes in 3.85 included in this release:
+   Changes in 3.91 included in this release:
 
-   - Bug 1792821 - Modification of the primes.c and dhe-params.c in order to have better looking tables.
-   - Bug 1796815 - Update zlib in NSS to 1.2.13.
-   - Bug 1796504 - Skip building modutil and shlibsign when building in Firefox.
-   - Bug 1796504 - Use __STDC_VERSION__ rather than __STDC__ as a guard. 
-   - Bug 1796407 - Fix -Wunused-but-set-variable warning from clang 15.
-   - Bug 1796308 - Fix -Wtautological-constant-out-of-range-compare and -Wtype-limits warnings. 
-   - Bug 1796281 - Followup: add missing stdint.h include.
-   - Bug 1796281 - Fix -Wint-to-void-pointer-cast warnings.
-   - Bug 1796280 - Fix -Wunused-{function,variable,but-set-variable} warnings on Windows.
-   - Bug 1796079 - Fix -Wstring-conversion warnings.
-   - Bug 1796075 - Fix -Wempty-body warnings.
-   - Bug 1795242 - Fix unused-but-set-parameter warning.
-   - Bug 1795241 - Fix unreachable-code warnings.
-   - Bug 1795222 - Mark _nss_version_c unused on clang-cl.
-   - Bug 1795668 - Remove redundant variable definitions in lowhashtest.
-   - No bug - Add note about python executable to build instructions.
+ - Bug 1837431 - Implementation of the HW support check for ADX instruction
+ - Bug 1836925 - Removing the support of Curve25519
+ - Bug 1839795 - Fix comment about the addition of ticketSupportsEarlyData.
+ - Bug 1839327 - Adding args to enable-legacy-db build
+ - Bug 1835357 dbtests.sh failure in "certutil dump keys with explicit default trust flags"
+ - Bug 1837617: Initialize flags in slot structures
+ - Bug 1835425: Improve the length check of RSA input to avoid heap overflow
+ - Bug 1829112 - Followup Fixes
+ - Bug 1784253: avoid processing unexpected inputs by checking for m_exptmod base sign
+ - Bug 1826652: add a limit check on order_k to avoid infinite loop
+ - Bug 1834851 - Update HACL* to commit 5f6051d2.
+ - Bug 1753026 - add SHA3 to cryptohi and softoken.
+ - Bug 1753026: HACL SHA3
+ - Bug 1836781 - Disabling ASM C25519 for A but X86_64

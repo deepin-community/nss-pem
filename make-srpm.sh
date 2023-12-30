@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -54,33 +54,38 @@ VER="`echo "$VER" | sed "s/-.*-/.$TIMESTAMP./"`"
 
 BRANCH="`git rev-parse --abbrev-ref HEAD`"
 test -n "$BRANCH" || die "failed to get current branch name"
-test master = "${BRANCH}" || VER="${VER}.${BRANCH//-/_}"
+test master = "${BRANCH}" || VER="${VER}.${BRANCH//[\/-]/_}"
 test -z "`git diff HEAD`" || VER="${VER}.dirty"
 
 NV="${PKG}-${VER}"
 printf "\n%s: preparing a release of \033[1;32m%s\033[0m\n\n" "$SELF" "$NV"
 
-TMP="`mktemp -d`"
-trap "rm -rf '$TMP'" EXIT
-cd "$TMP" >/dev/null || die "mktemp failed"
+if [[ "$1" != "--generate-spec" ]]; then
+    TMP="`mktemp -d`"
+    trap "rm -rf '$TMP'" EXIT
+    cd "$TMP" >/dev/null || die "mktemp failed"
 
-# clone the repository
-git clone "$REPO" "$PKG"                || die "git clone failed"
-cd "$PKG"                               || die "git clone failed"
+    # clone the repository
+    git clone "$REPO" "$PKG"                || die "git clone failed"
+    cd "$PKG"                               || die "git clone failed"
 
-# run tests
-( mkdir build && cd build && cmake ../src && make -j && make -j test) \
-                                        || die "'make test' has failed"
+    # run tests
+    ( mkdir build && cd build && cmake ../src && make -j && make -j test) \
+                                            || die "'make test' has failed"
 
-SRC_TAR="${NV}.tar"
-SRC="${SRC_TAR}.xz"
-git archive --prefix="$NV/" --format="tar" HEAD -- . > "$SRC_TAR" \
-                                        || die "failed to export sources"
+    SRC_TAR="${NV}.tar"
+    SRC="${SRC_TAR}.xz"
+    git archive --prefix="$NV/" --format="tar" HEAD -- . > "$SRC_TAR" \
+                                            || die "failed to export sources"
 
-xz -c "$SRC_TAR" > "$SRC"               || die "failed to compress sources"
+    xz -c "$SRC_TAR" > "$SRC"               || die "failed to compress sources"
+fi
 
 SPEC="./$PKG.spec"
 cat > "$SPEC" << EOF
+%undefine __cmake_in_source_build
+%undefine __cmake3_in_source_build
+
 Name:       $PKG
 Version:    $VER
 Release:    1%{?dist}
@@ -90,7 +95,7 @@ License:    MPLv1.1
 URL:        https://github.com/kdudka/nss-pem
 Source0:    https://github.com/kdudka/nss-pem/releases/download/$NV/$SRC
 
-BuildRequires: cmake
+BuildRequires: cmake3
 BuildRequires: gcc
 BuildRequires: make
 BuildRequires: nss-pkcs11-devel
@@ -106,18 +111,14 @@ module.
 %setup -q
 
 %build
-mkdir build
-cd build
-%cmake ../src -B.
-%make_build
+%cmake3 -S src
+%cmake3_build
 
 %install
-cd build
-%make_install
+%cmake3_install
 
 %check
-cd build
-ctest %{?_smp_mflags} --output-on-failure
+%ctest3
 
 %files
 %{_libdir}/libnsspem.so

@@ -46,6 +46,7 @@
 
 #include <blapi.h>
 #include <certt.h>
+#include <nssckfwc.h>
 #include <pk11pub.h>
 #include <secasn1.h>
 
@@ -1246,6 +1247,7 @@ pem_CreateObject
             /* FIXME: dirty hack relying on NSS internals */
             CK_SESSION_HANDLE hSession =
                 NSSCKFWInstance_FindSessionHandle(fwInstance, fwSession);
+            NSSCKFWC_Logout(fwInstance, hSession);
             NSSCKFWInstance_DestroySessionHandle(fwInstance, hSession);
         } else {
             *pError = CKR_KEY_UNEXTRACTABLE;

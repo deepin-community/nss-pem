@@ -1,3 +1,63 @@
+nss (2:3.91-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 05 Jul 2023 15:18:12 +0900
+
+nss (2:3.90-3) unstable; urgency=medium
+
+  * nss/lib/freebl/Makefile: Disable vale curve25519 code. It doesn't support
+    CPUs older than Broadwell or Ryzen. bz#1839975. Closes: #1038889.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 23 Jun 2023 08:01:22 +0900
+
+nss (2:3.90-2) unstable; urgency=medium
+
+  * nss/lib/freebl/Makefile: Apply upstream patch from bz#1836781 to fix FTBFS
+    on non-x86_64 64-bits architectures.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 22 Jun 2023 18:41:59 +0900
+
+nss (2:3.90-1) unstable; urgency=medium
+
+  * New upstream release. Closes: #1038859.
+  * debian/libnss3.symbols: Add NSSUTIL_3.90 symbol version.
+  * debian/libnss3.symbols, nss/lib/ssl/sslinfo.c, nss/lib/ssl/sslt.h,
+    nss/gtests/nss_bogo_shim/nss_bogo_shim.cc: Bump dependency version
+    for SSL_GetPreliminaryChannelInfo symbol and remove the previous
+    workaround.
+
+ -- Mike Hommey <glandium@debian.org>  Thu, 22 Jun 2023 14:30:11 +0900
+
+nss (2:3.89-2) unstable; urgency=medium
+
+  * nss/lib/ssl/sslinfo.c, nss/lib/ssl/sslt.h,
+    nss/gtests/nss_bogo_shim/nss_bogo_shim.cc: Make
+    SSL_GetPreliminaryChannelInfo ABI compatible with older versions by
+    default. Nothing else than NSS itself currently uses the new field.
+
+ -- Mike Hommey <glandium@debian.org>  Fri, 17 Mar 2023 08:46:46 +0900
+
+nss (2:3.89-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/libnss3.symbols: Add NSS_3.89 symbol version.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 15 Mar 2023 07:59:49 +0900
+
+nss (2:3.87.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Fixes CVE-2023-0767: Arbitrary memory write via PKCS 12 in NSS.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 15 Feb 2023 09:22:38 +0900
+
+nss (2:3.87-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Mike Hommey <glandium@debian.org>  Wed, 18 Jan 2023 07:02:20 +0900
+
 nss (2:3.85-1) unstable; urgency=medium
 
   * New upstream release.

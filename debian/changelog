@@ -1,8 +1,18 @@
-nss-pem (1.0.8+1-1deepin1) unstable; urgency=medium
+nss-pem (1.1.0-1) unstable; urgency=medium
 
-  * This is a packaged version which is suitable for deepin23 sys.
+  [ Debian Janitor ]
+  * Bump debhelper from old 10 to 13.
+  * Set debhelper-compat version in Build-Depends.
+  * Set upstream metadata fields: Repository-Browse.
+  * Use canonical URL in Vcs-Browser.
+  * Update standards version to 4.6.2, no changes needed.
 
- -- Cruise.zrz <Cruise.zrz@gmail.com>  Mon, 10 Jul 2023 11:43:20 +0800
+  [ Timo Aaltonen ]
+  * New upstream release.
+  * nss: Sync with src:nss 2:3.91-1 (Closes: #1037792)
+  * patches: Refreshed.
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Fri, 11 Aug 2023 20:41:35 +0300
 
 nss-pem (1.0.8+1-1) unstable; urgency=medium
 

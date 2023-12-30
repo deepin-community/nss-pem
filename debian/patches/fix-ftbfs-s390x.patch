@@ -48,12 +48,12 @@ Author: Eduardo Barretto <eduardo.barretto@canonical.com>
  
          /* Recursively delete all entries in the directory */
          while ((entry = PR_ReadDir(dir, PR_SKIP_BOTH)) != NULL) {
--            sprintf(filename, "%s/%s", path, entry->name);
+-            snprintf(filename, sizeof(filename), "%s/%s", path, entry->name);
 +            count = snprintf(filename, sizeof(filename), "%s/%s", path, entry->name);
 +            if (count >= sizeof(filename)) {
 +                PR_fprintf(PR_STDERR, "Error: Unable to find filename %s\n", filename);
-+                return -1;
-+            }
++		return -1;
++	    }
              if (rm_dash_r(filename)) {
                  PR_CloseDir(dir);
                  return -1;
@@ -71,7 +71,7 @@ Author: Eduardo Barretto <eduardo.barretto@canonical.com>
  
          /* Recursively delete all entries in the directory */
          while ((entry = PR_ReadDir(dir, PR_SKIP_BOTH)) != NULL) {
--            sprintf(filename, "%s/%s", path, entry->name);
+-            snprintf(filename, sizeof(filename), "%s/%s", path, entry->name);
 +            count = snprintf(filename, sizeof(filename), "%s/%s", path, entry->name);
 +            if (count >= sizeof(filename)) {
 +                PR_fprintf(errorFD, "Error: Unable to find filename %s.\n", filename);
